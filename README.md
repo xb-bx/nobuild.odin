@@ -2,7 +2,7 @@
 single-file build system for odin inspired by Tsoding's [nobuild.c](https://github.com/tsoding/nobuild)
 
 ## How to use
-1. Copy nobuild.odin to your project file
+1. Copy nobuild.odin to your project folder
 2. Create mybuild.odin
 ```odin
   package nobuild
