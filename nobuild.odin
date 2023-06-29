@@ -107,11 +107,16 @@ when ODIN_OS == .Linux {
         unix.sys_chdir(dir)
     }
     try_run :: proc(name: string, args: ..string) -> bool {
-        pid, err := os.fork()
         name := name
+        fmt.print(name, "")
+        for arg in args {
+            fmt.print(arg, "")
+        }
+        fmt.println()
         if os.exists(name) {
             name = concat("./", name)
         }
+        pid, err := os.fork()
         if err != os.ERROR_NONE {
             fmt.printf("ERROR: Failed to run %s\n", name)
             return false
