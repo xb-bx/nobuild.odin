@@ -101,6 +101,16 @@ when ODIN_OS == .Windows {
         return true
     }
 }
+directory_entries :: proc(dir:string) -> []os.File_Info {
+    when ODIN_OS == .Linux {
+        handle, err := os.open(dir, 65536)
+    } else {
+        handle, err := os.open(dir, O_RDWR)
+    }
+    fi, errno := os.read_dir(handle, -1)
+    os.close(handle)
+    return fi
+}
 when ODIN_OS == .Linux {
     cd :: proc(dir: string) {
         dir := strings.clone_to_cstring(dir)
@@ -131,7 +141,8 @@ when ODIN_OS == .Linux {
         else {
             // For some reason odin standard lib does not have wait for pid function
             SYS_waitid :: 247
-            a:=mem.alloc(1024)
+            a := mem.alloc(1024)
+            
             code := intrinsics.syscall(SYS_waitid, 1, uintptr(pid), 0, 4, uintptr(a))
             mem.free(a)
         }
