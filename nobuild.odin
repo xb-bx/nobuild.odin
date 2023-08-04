@@ -105,7 +105,7 @@ directory_entries :: proc(dir:string) -> []os.File_Info {
     when ODIN_OS == .Linux {
         handle, err := os.open(dir, 65536)
     } else {
-        handle, err := os.open(dir, O_RDWR)
+        handle, err := os.open(dir, os.O_RDWR)
     }
     fi, errno := os.read_dir(handle, -1)
     os.close(handle)
