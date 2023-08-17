@@ -123,9 +123,6 @@ when ODIN_OS == .Linux {
             fmt.print(arg, "")
         }
         fmt.println()
-        if os.exists(name) {
-            name = concat("./", name)
-        }
         pid, err := os.fork()
         if err != os.ERROR_NONE {
             fmt.printf("ERROR: Failed to run %s\n", name)
