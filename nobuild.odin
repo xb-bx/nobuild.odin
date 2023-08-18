@@ -296,6 +296,47 @@ try_cp :: proc(from: string, to: string) -> bool {
         return _cp_file(from, to)
     }
 }
+
+
+Optimization :: enum {
+    none,
+    minimal,
+    size,
+    speed,
+}
+
+odin_build :: proc(path: string, output: string = "", collections: map[string]string = nil, define: map[string]string=nil, optimization: Optimization = .none, additional_args: []string = nil) {
+    
+    args := make([dynamic]string)
+    defer delete(args)
+    append(&args, "build")
+    append(&args, path)
+    allocated_args := make([dynamic]string)
+    for name,colpath in collections {
+        append(&allocated_args, fmt.aprintf("-collection:%s=%s", name, colpath))
+    }
+    for name,value in define {
+        append(&allocated_args, fmt.aprintf("-define:%s=%s", name, value))
+    }
+    
+    defer {
+        for arg in allocated_args {
+            delete(arg)
+        }
+        delete(allocated_args)
+    }
+    if output != "" {
+        append(&allocated_args, fmt.aprintf("-out:%s", output))
+    }
+    append(&allocated_args, fmt.aprintf("-o:%s", optimization))
+    if additional_args != nil {
+        append_elems(&args, ..additional_args)
+    }
+    append_elems(&args, ..allocated_args[:])
+
+    run("odin", ..args[:])
+} 
+
 cp :: proc(from: string, to: string) {
     if !try_cp(from, to) {
         exit(1)
