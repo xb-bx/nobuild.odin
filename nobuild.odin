@@ -138,7 +138,7 @@ when ODIN_OS == .Linux {
         else {
             // For some reason odin standard lib does not have wait for pid function
             SYS_waitid :: 247
-            a := mem.alloc(1024)
+            a, _ := mem.alloc(1024)
             
             code := intrinsics.syscall(SYS_waitid, 1, uintptr(pid), 0, 4, uintptr(a))
             mem.free(a)
