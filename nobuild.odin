@@ -5,7 +5,7 @@ import "core:os"
 import "core:path/filepath"
 import "core:intrinsics"
 import "core:mem"
-
+import "core:runtime"
 when ODIN_OS == .Windows do import "core:sys/windows"
 when ODIN_OS == .Linux do import "core:sys/unix"
 
@@ -304,8 +304,23 @@ Optimization :: enum {
     size,
     speed,
 }
-
-odin_build :: proc(path: string, output: string = "", collections: map[string]string = nil, define: map[string]string=nil, optimization: Optimization = .none, additional_args: []string = nil) {
+build_mode_to_string :: proc(build_mode: runtime.Odin_Build_Mode_Type) -> string {
+    switch build_mode {
+        case .Dynamic:
+            return "dynamic"
+        case .Executable:
+            return "exe"
+        case .Object:
+            return "object"
+        case .Assembly:
+            return "asm"
+        case .LLVM_IR:
+            return "llvm"
+    }
+    return "exe"
+}
+odin_build :: proc(path: string, output: string = "", collections: map[string]string = nil, define: map[string]string=nil, optimization: Optimization = .none, additional_args: []string = nil, build_mode: runtime.Odin_Build_Mode_Type = .Executable) {
+    
     
     args := make([dynamic]string)
     defer delete(args)
@@ -329,6 +344,7 @@ odin_build :: proc(path: string, output: string = "", collections: map[string]st
         append(&allocated_args, fmt.aprintf("-out:%s", output))
     }
     append(&allocated_args, fmt.aprintf("-o:%s", optimization))
+    append(&allocated_args, fmt.aprintf("-build-mode:%s", build_mode_to_string(build_mode)))
     if additional_args != nil {
         append_elems(&args, ..additional_args)
     }
