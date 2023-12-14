@@ -6,8 +6,8 @@ import "core:path/filepath"
 import "core:intrinsics"
 import "core:mem"
 import "core:runtime"
-when ODIN_OS == .Windows do import "core:sys/windows"
-when ODIN_OS == .Linux do import "core:sys/unix"
+import "core:sys/windows"
+import "core:sys/unix"
 
 run :: proc(name: string, args: ..string) {
     if !try_run(name, ..args) {
