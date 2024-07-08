@@ -1,11 +1,11 @@
 package nobuild
+import "base:intrinsics"
+import "base:runtime"
 import "core:fmt"
 import "core:strings"
 import "core:os"
 import "core:path/filepath"
-import "core:intrinsics"
 import "core:mem"
-import "core:runtime"
 import "core:sys/windows"
 import "core:sys/unix"
 
@@ -308,6 +308,8 @@ build_mode_to_string :: proc(build_mode: runtime.Odin_Build_Mode_Type) -> string
     switch build_mode {
         case .Dynamic:
             return "dynamic"
+        case .Static:
+            return "static"
         case .Executable:
             return "exe"
         case .Object:
